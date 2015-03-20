@@ -1,0 +1,68 @@
+# ~/.tmuxinator/startup.yml
+
+name: startup
+root: ~/dev/
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+windows:
+  - mongoData: 
+      layout: a327,316x72,0,0{160x72,0,0,0,155x72,161,0,5} 
+      panes:
+        - mongod:
+          - mongod --dbpath ~/data/db
+        - mongo:
+          - sleep 30
+          - mongo dev-june5
+  - nodeAPI:
+      layout: 2329,316x72,0,0{160x72,0,0,1,155x72,161,0,6}
+      panes:
+        - node:
+          - cd freshgrade
+          - sleep 30
+          - nodemon server -w server
+        - API:
+          - touch /tmp/nodeaccess.log
+          - tail -f /tmp/nodeaccess.log | awk -F ' ' '{print $6,$3,$4}; system("")' | grep -v OPTIONS --line-buffered | grep api --line-buffered
+  - bashGrunt:
+      layout: a32a,316x72,0,0{160x72,0,0,2,155x72,161,0,7}
+      panes:
+        - grunt:
+          - cd freshgrade
+          - grunt build:teacher --watchify || osx-notifier --type fail --message "grunt fail"
+        - bash:
+          - cd freshgrade
+  - postgresData:
+      layout: 232c,316x72,0,0{160x72,0,0,3,155x72,161,0,8}
+      panes:
+        - postgres:
+          - postgres -D /usr/local/var/postgres
+        - pgcli:
+          - sleep 30
+          - pgcli fas
+  - bashMaven:
+      layout: afd5,316x72,0,0{190x72,0,0,4,125x72,191,0,9}
+      panes:
+        - maven:
+          - cd freshgrade-authentication-server
+          - source /etc/profile.d/apache-maven.sh
+          - sleep 5
+          - mvn install -Dmaven.test.skip=true
+          - sleep 30
+          - cd freshgrade-authentication-web/freshgrade-authentication-war
+          - mvn spring-boot:run
+        - bashfas: 
+          - cd freshgrade-authentication-server
