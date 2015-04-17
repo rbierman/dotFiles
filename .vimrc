@@ -16,6 +16,8 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'Lokaltog/vim-powerline'
 " Better file tree
 Bundle 'scrooloose/nerdtree'
+" Syntastic sugar
+Bundle 'scrooloose/syntastic'
 " Open file/buffer by name
 Bundle 'ctrlp.vim'
 
@@ -78,3 +80,14 @@ let g:NERDTreeIgnore=['\.git$', '\.class$']
 nmap <Leader>n :NERDTreeToggle<cr>
 nmap <Leader>nf :NERDTreeFind<cr>
 nmap <Leader>nc :NERDTreeClose<cr>
+
+" Syntastic config
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['jshint']
